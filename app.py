@@ -224,20 +224,21 @@ def preprocess_image(image_path):
 
 
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
-@app.route('/signup', methods=['GET'])
-def show_signup():
-    return render_template('signup.html')
-
-@app.route('/')
+@app.route('/login')
 def show_login():
     return render_template('login.html')
 
-@app.route('/signup', methods=['GET'])
+@app.route('/signup')
+def show_signup():
+    return render_template('signup.html')
+
+@app.route('/result')
 def show_result():
     return render_template('result.html')
+
 
 @app.route('/api/scan', methods=['POST'])
 def scan():
@@ -364,10 +365,12 @@ def get_profile():
 def logout():
     session.clear()
     return jsonify({'message': 'Logged out'})
+@app.before_request
+def create_tables_once():
+    if not hasattr(app, 'db_initialized'):
+        db.create_all()
+        app.db_initialized = True
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
 
 if __name__ == '__main__':
     app.run(debug=True)
