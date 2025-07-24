@@ -9,7 +9,7 @@ import numpy as np
 import os, io
 from PIL import Image
 import datetime
-import OpenAI
+import Openai
 from twilio.rest import Client
 import requests
 from dotenv import load_dotenv
