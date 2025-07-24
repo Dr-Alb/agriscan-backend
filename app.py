@@ -222,19 +222,17 @@ def preprocess_image(image_path):
     img = Image.open(image_path).resize((224, 224)).convert('RGB')
     img_array = np.expand_dims(np.array(img, dtype=np.float32) / 255.0, axis=0)
     return img_array
-
 @app.route("/")
-def index():
+def serve_frontend():
     return send_from_directory(app.static_folder, "index.html")
 
 @app.errorhandler(404)
 def not_found(e):
     return send_from_directory(app.static_folder, "index.html")
 
-
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.route("/home")
+def home_page():
+    return render_template("index.html")  # Optional: if you want this too
 
 @app.route('/login')
 def show_login():
@@ -256,13 +254,11 @@ def scan():
         return jsonify({'error': 'No file uploaded'}), 400
 
     try:
-        # Load and preprocess image
         image = Image.open(file.stream).convert('RGB')
         image = image.resize((224, 224))
         image = np.array(image, dtype=np.float32) / 255.0
         image = np.expand_dims(image, axis=0)
 
-        # Run inference
         interpreter.set_tensor(input_details[0]['index'], image)
         interpreter.invoke()
         output_data = interpreter.get_tensor(output_details[0]['index'])[0]
@@ -282,6 +278,7 @@ def scan():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 @app.route('/api/chat', methods=['POST'])
 def chatbot():
     user_message = request.json.get('message')
@@ -296,6 +293,7 @@ def chatbot():
         reply = "🤖 I'm AgriBot! Ask me about leaf diseases, treatments, reminders, or scanning tips."
 
     return jsonify({'reply': reply})
+
 
 @app.route('/api/reminders', methods=['POST'])
 def create_reminder():
@@ -319,6 +317,7 @@ def create_reminder():
 
     return jsonify({'message': 'Reminder saved to DB'})
 
+
 @app.route('/api/reminders', methods=['GET'])
 def get_reminders():
     user_email = session.get('user')
@@ -327,6 +326,7 @@ def get_reminders():
     return jsonify([
         {'id': r.id, 'title': r.title, 'datetime': r.datetime.isoformat()} for r in reminders
     ])
+
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
@@ -343,6 +343,7 @@ def signup():
     db.session.commit()
     return jsonify({'message': 'User registered'})
 
+
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
@@ -355,6 +356,7 @@ def login():
 
     session['user'] = user.email
     return jsonify({'message': 'Logged in', 'email': user.email})
+
 
 @app.route('/api/profile', methods=['GET'])
 @jwt_required()
@@ -370,10 +372,12 @@ def get_profile():
         "joined": user.created_at.strftime('%Y-%m-%d %H:%M:%S')
     })
 
+
 @app.route('/api/logout')
 def logout():
     session.clear()
     return jsonify({'message': 'Logged out'})
+
 
 @app.route('/save_report', methods=['POST'])
 @jwt_required()
@@ -398,8 +402,10 @@ def create_tables_once():
         db.create_all()
         app.db_initialized = True
 
+        
 port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port=port)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
