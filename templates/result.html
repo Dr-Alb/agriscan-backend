@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prediction Result</title>
+</head>
+<body>
+    <h1>Prediction</h1>
+    <p><strong>Class:</strong> {{ label }}</p>
+    <p><strong>Confidence:</strong> {{ '%.2f' % (confidence * 100) }}%</p>
+    <img src="{{ image_path }}" alt="Uploaded image" width="300">
+    <br><a href="/">Try another</a>
+</body>
+</html>
