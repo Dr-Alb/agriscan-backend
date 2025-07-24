@@ -2,10 +2,20 @@ services:
   - type: web
     name: agriscan-backend
     env: python
+    runtime: python  
     buildCommand: |
-      pyenv install 3.10.13 --skip-existing
-      pyenv global 3.10.13
       pip install -r requirements.txt
     startCommand: gunicorn app:app
-    pythonVersion: 3.10.13
     region: oregon
+    pythonVersion: 3.10
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: WEATHER_API_KEY
+        sync: false
+      - key: TWILIO_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_PHONE
+        sync: false

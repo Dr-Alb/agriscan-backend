@@ -6,10 +6,15 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 import tensorflow as tf
 import numpy as np
-import os
+import os, io
 from PIL import Image
 import datetime
+import OpenAI
+from twilio.rest import Client
+import requests
+from dotenv import load_dotenv
 
+load_dotenv()
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'
 CORS(app, supports_credentials=True)
@@ -199,6 +204,8 @@ disease_info = {
 
 
 class User(db.Model):
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
