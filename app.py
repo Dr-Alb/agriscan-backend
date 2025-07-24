@@ -232,11 +232,11 @@ def show_signup():
     return render_template('signup.html')
 
 @app.route('/')
-def home():
+def show_login():
     return render_template('login.html')
 
 @app.route('/signup', methods=['GET'])
-def show_signup():
+def show_result():
     return render_template('result.html')
 
 @app.route('/api/scan', methods=['POST'])
