@@ -1,19 +1,16 @@
 services:
   - type: web
-    name: agriscan-backend
+    name: agriscan-fullstack
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
-    region: oregon
-    pythonVersion: 3.10
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      cd frontend && npm install && npm run build && cd ..
+      cp -r frontend/dist/* backend/static/
+    startCommand: python backend/app.py
+    autoDeploy: true
     envVars:
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: WEATHER_API_KEY
-        sync: false
-      - key: TWILIO_SID
-        sync: false
-      - key: TWILIO_AUTH_TOKEN
-        sync: false
-      - key: TWILIO_PHONE
-        sync: false
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 10000
