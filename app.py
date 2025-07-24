@@ -9,7 +9,8 @@ import numpy as np
 import os, io
 from PIL import Image
 import datetime
-import Openai
+import openai
+from flask import render_template
 from twilio.rest import Client
 import requests
 from dotenv import load_dotenv
@@ -220,6 +221,23 @@ def preprocess_image(image_path):
     img = Image.open(image_path).resize((224, 224)).convert('RGB')
     img_array = np.expand_dims(np.array(img, dtype=np.float32) / 255.0, axis=0)
     return img_array
+
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/signup', methods=['GET'])
+def show_signup():
+    return render_template('signup.html')
+
+@app.route('/')
+def home():
+    return render_template('login.html')
+
+@app.route('/signup', methods=['GET'])
+def show_signup():
+    return render_template('result.html')
 
 @app.route('/api/scan', methods=['POST'])
 def scan():
