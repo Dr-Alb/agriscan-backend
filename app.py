@@ -365,6 +365,24 @@ def get_profile():
 def logout():
     session.clear()
     return jsonify({'message': 'Logged out'})
+
+@app.route('/save_report', methods=['POST'])
+@jwt_required()
+def save_report():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    new_report = Report(
+        user_id=user_id,
+        prediction=data.get('prediction'),
+        probability=data.get('probability'),
+        description=data.get('description'),
+        treatment=data.get('treatment'),
+    )
+    db.session.add(new_report)
+    db.session.commit()
+    return jsonify({"msg": "Report saved"}), 200
+
+
 @app.before_request
 def create_tables_once():
     if not hasattr(app, 'db_initialized'):
