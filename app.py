@@ -14,9 +14,10 @@ from flask import render_template
 from twilio.rest import Client
 import requests
 from dotenv import load_dotenv
+from flask import Flask, send_from_directory
 
 load_dotenv()
-app = Flask(__name__)
+app = Flask(__name__,static_folder='static')
 app.secret_key = 'your-secret-key'
 CORS(app, supports_credentials=True)
 
@@ -221,6 +222,14 @@ def preprocess_image(image_path):
     img = Image.open(image_path).resize((224, 224)).convert('RGB')
     img_array = np.expand_dims(np.array(img, dtype=np.float32) / 255.0, axis=0)
     return img_array
+
+@app.route("/")
+def index():
+    return send_from_directory(app.static_folder, "index.html")
+
+@app.errorhandler(404)
+def not_found(e):
+    return send_from_directory(app.static_folder, "index.html")
 
 
 @app.route('/')
