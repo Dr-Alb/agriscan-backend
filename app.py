@@ -230,21 +230,6 @@ def serve_frontend():
 def not_found(e):
     return send_from_directory(app.static_folder, "index.html")
 
-@app.route("/home")
-def home_page():
-    return render_template("index.html")  # Optional: if you want this too
-
-@app.route('/login')
-def show_login():
-    return render_template('login.html')
-
-@app.route('/signup')
-def show_signup():
-    return render_template('signup.html')
-
-@app.route('/result')
-def show_result():
-    return render_template('result.html')
 
 
 @app.route('/api/scan', methods=['POST'])
@@ -402,7 +387,7 @@ def create_tables_once():
         db.create_all()
         app.db_initialized = True
 
-        
+
 port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port=port)
 
