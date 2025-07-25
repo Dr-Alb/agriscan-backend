@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: agriscan-fullstack
+    env: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      cd frontend && npm install && npm run build && cd ..
+      mkdir -p backend/static
+      cp -r frontend/dist/* backend/static/
+    startCommand: gunicorn backend.app:app
+    autoDeploy: true
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 10000
